@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planner Wall - Your Premium Productivity Companion</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-dark: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1729 100%);
+  --bg-light: linear-gradient(135deg, #f0f4f8 0%, #d9e8f5 50%, #e8f1f8 100%);
+  --panel-dark: rgba(15, 25, 45, 0.85);
+  --panel-light: rgba(255, 255, 255, 0.85);
+  --accent: #6366f1;
+  --accent-glow: rgba(99, 102, 241, 0.4);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --card-dark: rgba(30, 41, 59, 0.6);
+  --card-light: rgba(255, 255, 255, 0.9);
+  --text-dark: #f1f5f9;
+  --text-light: #0f172a;
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --glow: 0 0 20px var(--accent-glow);
+  --radius: 16px;
+  --radius-lg: 24px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+  animation: meshMove 20s ease infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes meshMove {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(5%, -5%) rotate(120deg); }
+  66% { transform: translate(-5%, 5%) rotate(240deg); }
+}
+
+body[data-theme="light"] {
+  background: var(--bg-light);
+  color: var(--text-light);
+}
+
+/* Header */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  z-index: 1000;
+  padding: 0 clamp(16px, 5vw, 40px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--panel-dark);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="light"] header {
+  background: var(--panel-light);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 8px 12px;
+  border-radius: 12px;
+}
+
+.brand:hover {
+  background: rgba(99, 102, 241, 0.1);
+  transform: translateY(-2px);
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.brand-text .main {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-text .sub {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  font-weight: 500;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.level-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--card-dark);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.level-badge:hover {
+  background: rgba(99, 102, 241, 0.1);
+  transform: scale(1.05);
+  box-shadow: var(--glow);
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: var(--card-dark);
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: all 0.3s;
+}
+
+body[data-theme="light"] .icon-btn {
+  background: var(--card-light);
+  color: var(--text-light);
+}
+
+.icon-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--glow);
+}
+
+/* Drawer */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 90%;
+  max-width: 400px;
+  height: 100vh;
+  background: var(--panel-dark);
+  backdrop-filter: blur(20px);
+  z-index: 999;
+  transition: right 0.4s;
+  overflow-y: auto;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body[data-theme="light"] .drawer {
+  background: var(--panel-light);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.drawer.active {
+  right: 0;
+}
+
+.drawer-header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-content {
+  padding: 24px;
+}
+
+.drawer-section {
+  margin-bottom: 32px;
+}
+
+.drawer-section h4 {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.drawer-item {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--card-dark);
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+}
+
+body[data-theme="light"] .drawer-item {
+  background: var(--card-light);
+}
+
+.drawer-item:hover {
+  background: rgba(99, 102, 241, 0.2);
+  transform: translateX(-4px);
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: var(--panel-dark);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 clamp(8px, 3vw, 24px);
+  z-index: 1000;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+}
+
+body[data-theme="light"] .bottom-nav {
+  background: var(--panel-light);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s;
+  position: relative;
+  max-width: 80px;
+}
+
+.nav-item::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 0 0 3px 3px;
+  transition: width 0.3s;
+}
+
+.nav-item.active::before {
+  width: 60%;
+}
+
+.nav-item.active {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.nav-item .icon {
+  font-size: 1.5rem;
+  transition: all 0.3s;
+}
+
+.nav-item.active .icon {
+  transform: scale(1.1);
+}
+
+.nav-item .label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.nav-item.active .label {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* Container */
+.container {
+  position: relative;
+  z-index: 1;
+  padding: 90px clamp(16px, 5vw, 40px) 92px;
+  max-width: 1400px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.screen {
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard */
+.dashboard-hero {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.dashboard-hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.dashboard-hero p {
+  opacity: 0.7;
+  font-size: 1.1rem;
+}
+
+.progress-ring-container {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.progress-ring {
+  width: 240px;
+  height: 240px;
+  position: relative;
+}
+
+.progress-ring svg {
+  transform: rotate(-90deg);
+}
+
+.progress-ring-bg {
+  fill: none;
+  stroke: rgba(99, 102, 241, 0.1);
+  stroke-width: 12;
+}
+
+.progress-ring-fill {
+  fill: none;
+  stroke: url(#progressGradient);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.progress-ring-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.progress-ring-percent {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.progress-ring-label {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--card-dark);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s;
+}
+
+body[data-theme="light"] .card {
+  background: var(--card-light);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 12px 0;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  margin-bottom: 16px;
+}
+
+.mini-progress {
+  height: 6px;
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  transition: width 0.5s ease;
+}
+
+.streak-display {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.flame {
+  font-size: 1.5rem;
+  animation: flameFlicker 1.5s infinite;
+}
+
+@keyframes flameFlicker {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Quick Add */
+.quick-add-form {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.quick-add-input {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-dark);
+  color: var(--text-dark);
+  font-size: 1rem;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+body[data-theme="light"] .quick-add-input {
+  background: white;
+  color: var(--text-light);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.quick-add-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.btn {
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: inherit;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+
+/* List Items */
+.list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.list-item {
+  padding: 16px;
+  background: var(--card-dark);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: move;
+}
+
+body[data-theme="light"] .list-item {
+  background: var(--card-light);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.list-item:hover {
+  transform: translateX(4px);
+  border-color: var(--accent);
+}
+
+.list-item.done {
+  opacity: 0.5;
+}
+
+.list-item.done .list-item-text {
+  text-decoration: line-through;
+}
+
+.list-item-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.list-item.done .list-item-check {
+  background: var(--accent);
+  position: relative;
+}
+
+.list-item.done .list-item-check::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.list-item-text {
+  flex: 1;
+  font-weight: 500;
+}
+
+.list-item-actions {
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.list-item:hover .list-item-actions {
+  opacity: 1;
+}
+
+.list-item-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(99, 102, 241, 0.2);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.list-item-btn:hover {
+  background: var(--danger);
+  transform: scale(1.1);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+.empty-state-message {
+  opacity: 0.6;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  background: var(--panel-dark);
+  backdrop-filter: blur(20px);
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  z-index: 10000;
+  animation: slideIn 0.4s;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(100px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #8b5cf6);
+  color: white;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  box-shadow: 0 8px 24px var(--accent-glow);
+  transition: all 0.3s;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fab:hover {
+  transform: scale(1.1) rotate(90deg);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  background: var(--panel-dark);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  max-width: 90vw;
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: modalSlide 0.4s;
+}
+
+@keyframes modalSlide {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.modal-close:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* Confetti */
+#confetti {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header { height: 60px; padding: 0 16px; }
+  .level-badge { display: none; }
+  .container { padding: 80px 16px 92px; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body data-theme="dark">
+
+<canvas id="confetti"></canvas>
+
+<header>
+  <div class="brand" id="brandLogo">
+    <div class="brand-icon">🌿</div>
+    <div class="brand-text">
+      <div class="main">PLANNER WALL</div>
+      <div class="sub">by DARINJSE</div>
+    </div>
+  </div>
+  
+  <div class="header-actions">
+    <div class="level-badge" id="levelBadge">
+      <span>⚡</span>
+      <span>Level <strong id="userLevel">1</strong></span>
+    </div>
+    <button class="icon-btn" id="themeToggle">🌙</button>
+    <button class="icon-btn" id="drawerToggle">☰</button>
+  </div>
+</header>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h3>Settings</h3>
+    <button class="icon-btn" id="drawerClose">✖</button>
+  </div>
+  
+  <div class="drawer-content">
+    <div class="drawer-section">
+      <h4>Customization</h4>
+      <div class="drawer-item" style="justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span>🎨</span>
+          <span>Accent Color</span>
+        </div>
+        <input type="color" id="accentPicker" value="#6366f1" 
+               style="width: 40px; height: 40px; border: none; border-radius: 8px; cursor: pointer;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <div class="nav-item active" data-screen="dashboard">
+    <div class="icon">🏠</div>
+    <div class="label">Home</div>
+  </div>
+  <div class="nav-item" data-screen="routines">
+    <div class="icon">📋</div>
+    <div class="label">Routines</div>
+  </div>
+  <div class="nav-item" data-screen="todos">
+    <div class="icon">✓</div>
+    <div class="label">Tasks</div>
+  </div>
+  <div class="nav-item" data-screen="focus">
+    <div class="icon">🎯</div>
+    <div class="label">Focus</div>
+  </div>
+</nav>
+
+<div class="container">
+  
+  <div class="screen active" id="dashboardScreen">
+    <div class="dashboard-hero">
+      <h1>Welcome Back! 👋</h1>
+      <p id="heroGreeting">Let's make today productive</p>
+    </div>
+    
+    <div class="progress-ring-container">
+      <div class="progress-ring">
+        <svg width="240" height="240">
+          <defs>
+            <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#6366f1" />
+              <stop offset="100%" style="stop-color:#8b5cf6" />
+            </linearGradient>
+          </defs>
+          <circle class="progress-ring-bg" cx="120" cy="120" r="100"/>
+          <circle class="progress-ring-fill" cx="120" cy="120" r="100" 
+                  stroke-dasharray="628" stroke-dashoffset="628" id="progressCircle"/>
+        </svg>
+        <div class="progress-ring-center">
+          <div class="progress-ring-percent" id="todayPercent">0%</div>
+          <div class="progress-ring-label">Today's Progress</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">🔥</div>
+          <div class="card-title">Streak</div>
+        </div>
+        <div class="stat-value" id="streakValue">0</div>
+        <div class="stat-label">Days in a row</div>
+        <div class="streak-display" id="streakFlames"></div>
+      </div>
+      
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">✅</div>
+          <div class="card-title">Completed</div>
+        </div>
+        <div class="stat-value" id="completedValue">0/0</div>
+        <div class="stat-label">Today</div>
+        <div class="mini-progress">
+          <div class="mini-progress-fill" id="completedProgress"></div>
+        </div>
+      </div>
+      
+      <div class="card" style="grid-column: span 2;">
+        <div class="card-header">
+          <div class="card-icon">➕</div>
+          <div class="card-title">Quick Add</div>
+        </div>
+        <div class="quick-add-form">
+          <input type="text" class="quick-add-input" id="quickAddInput" 
+                 placeholder="Add task (try: tomorrow, next monday, 3pm)">
+          <button class="btn btn-primary" id="quickAddBtn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen" id="routinesScreen">
+    <div class="dashboard-hero">
+      <h1>Daily Routines 📋</h1>
+      <p>Build consistent habits</p>
+    </div>
+    
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="quick-add-form">
+        <input type="text" class="quick-add-input" id="newRoutineInput" 
+               placeholder="Add new routine...">
+        <button class="btn btn-primary" id="addRoutineBtn">Add</button>
+      </div>
+    </div>
+    
+    <div class="list-container" id="routineList">
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-message">No routines yet</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen" id="todosScreen">
+    <div class="dashboard-hero">
+      <h1>Tasks ✓</h1>
+      <p>Get things done</p>
+    </div>
+    
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="quick-add-form">
+        <input type="text" class="quick-add-input" id="newTodoInput" 
+               placeholder="Add new task...">
+        <button class="btn btn-primary" id="addTodoBtn">Add</button>
+      </div>
+    </div>
+    
+    <div class="list-container" id="todoList">
+      <div class="empty-state">
+        <div class="empty-state-icon">✓</div>
+        <div class="empty-state-message">No tasks yet</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="screen" id="focusScreen">
+    <div class="dashboard-hero">
+      <h1>Focus Mode 🎯</h1>
+      <p>Deep work session</p>
+    </div>
+    
+    <div class="card" style="text-align: center; padding: 60px 40px;">
+      <div style="font-size: 6rem; font-weight: 800; color: var(--accent); margin-bottom: 24px;" 
+           id="focusTimer">25:00</div>
+      <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+        <button class="btn btn-primary" id="focusStart">▶ Start</button>
+        <button class="btn" style="background: var(--card-dark);" id="focusPause">⏸ Pause</button>
+        <button class="btn" style="background: var(--card-dark);" id="focusReset">↻ Reset</button>
+      </div>
+      <div style="margin-top: 32px; opacity: 0.7;" id="focusStatus">Ready to focus</div>
+    </div>
+  </div>
+
+</div>
+
+<button class="fab" id="fab">+</button>
+
+<div class="modal-overlay" id="modalOverlay"></div>
+
+<script>
+// ========== STORAGE ==========
+const Storage = {
+  get(key, def = null) {
+    try {
+      const val = localStorage.getItem(key);
+      return val ? JSON.parse(val) : def;
+    } catch(e) {
+      return def;
+    }
+  },
+  set(key, val) {
+    try {
+      localStorage.setItem(key, JSON.stringify(val));
+      return true;
+    } catch(e) {
+      return false;
+    }
+  }
+};
+
+// ========== CONSTANTS ==========
+const KEYS = {
+  TODOS: 'pw_todos',
+  ROUTINES: 'pw_routines',
+  ROUTINE_DAY: 'pw_routine_day_',
+  XP: 'pw_xp',
+  THEME: 'pw_theme',
+  ACCENT: 'pw_accent',
+  LAST_SCREEN: 'pw_screen'
+};
+
+// ========== UTILS ==========
+const uid = () => 'id_' + Math.random().toString(36).slice(2, 9);
+
+const todayISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+};
+
+const escapeHtml = (s) => {
+  if (!s && s !== 0) return '';
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+};
+
+const showToast = (msg, icon = '✓') => {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = `<span style="font-size:1.5rem">${icon}</span><span>${escapeHtml(msg)}</span>`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+};
+
+// ========== DATA ==========
+let todos = Storage.get(KEYS.TODOS, []);
+let routines = Storage.get(KEYS.ROUTINES, []);
+
+const loadRoutineDay = (date) => Storage.get(KEYS.ROUTINE_DAY + date, {});
+const saveRoutineDay = (date, obj) => Storage.set(KEYS.ROUTINE_DAY + date, obj);
+
+const getXP = () => Storage.get(KEYS.XP, {total: 0, level: 1});
+const addXP = (amount) => {
+  const xp = getXP();
+  xp.total += amount;
+  xp.level = Math.floor(xp.total / 100) + 1;
+  Storage.set(KEYS.XP, xp);
+  updateLevelBadge();
+  return xp;
+};
+
+const updateLevelBadge = () => {
+  document.getElementById('userLevel').textContent = getXP().level;
+};
+
+const getBestStreak = () => {
+  let streak = 0;
+  let cur = new Date();
+  
+  while (true) {
+    const d = new Date(cur);
+    const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const dayData = loadRoutineDay(iso);
+    
+    if (Object.keys(dayData).length > 0 && Object.values(dayData).some(v => v)) {
+      streak++;
+    } else {
+      break;
+    }
+    
+    cur.setDate(cur.getDate() - 1);
+  }
+  
+  return streak;
+};
+
+const getTodayCompletion = () => {
+  const dayStatus = loadRoutineDay(todayISO());
+  const todayTodos = todos.filter(t => t.date === todayISO() || !t.date);
+  
+  const routinesDone = Object.values(dayStatus).filter(Boolean).length;
+  const todosDone = todayTodos.filter(t => t.done).length;
+  
+  const total = routines.length + todayTodos.length;
+  if (total === 0) return 0;
+  
+  return Math.round(((routinesDone + todosDone) / total) * 100);
+};
+
+// ========== NAVIGATION ==========
+const showScreen = (id) => {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id + 'Screen').classList.add('active');
+  
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  document.querySelector(`[data-screen="${id}"]`).classList.add('active');
+  
+  Storage.set(KEYS.LAST_SCREEN, id);
+  
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'routines') renderRoutines();
+  if (id === 'todos') renderTodos();
+  if (id === 'focus') renderFocus();
+};
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.onclick = () => showScreen(item.dataset.screen);
+});
+
+document.getElementById('brandLogo').onclick = () => showScreen('dashboard');
+
+// ========== DRAWER ==========
+const openDrawer = () => {
+  document.getElementById('drawer').classList.add('active');
+  document.getElementById('drawerOverlay').classList.add('active');
+};
+
+const closeDrawer = () => {
+  document.getElementById('drawer').classList.remove('active');
+  document.getElementById('drawerOverlay').classList.remove('active');
+};
+
+document.getElementById('drawerToggle').onclick = openDrawer;
+document.getElementById('drawerClose').onclick = closeDrawer;
+document.getElementById('drawerOverlay').onclick = closeDrawer;
+
+// ========== THEME ==========
+let theme = Storage.get(KEYS.THEME, 'dark');
+document.body.dataset.theme = theme;
+document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+
+document.getElementById('themeToggle').onclick = () => {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = theme;
+  document.getElementById('themeToggle').textContent = theme === 'dark' ? '🌙' : '☀️';
+  Storage.set(KEYS.THEME, theme);
+};
+
+// ========== ACCENT COLOR ==========
+const accentPicker = document.getElementById('accentPicker');
+const savedAccent = Storage.get(KEYS.ACCENT, '#6366f1');
+accentPicker.value = savedAccent;
+document.documentElement.style.setProperty('--accent', savedAccent);
+
+accentPicker.oninput = (e) => {
+  const color = e.target.value;
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent-glow', color + '66');
+  Storage.set(KEYS.ACCENT, color);
+};
+
+// ========== DASHBOARD ==========
+const renderDashboard = () => {
+  const hour = new Date().getHours();
+  let greeting = 'Good evening';
+  if (hour < 12) greeting = 'Good morning';
+  else if (hour < 18) greeting = 'Good afternoon';
+  document.getElementById('heroGreeting').textContent = greeting + "! Let's make today productive";
+  
+  const completion = getTodayCompletion();
+  const circumference = 2 * Math.PI * 100;
+  const offset = circumference - (completion / 100) * circumference;
+  document.getElementById('progressCircle').style.strokeDashoffset = offset;
+  document.getElementById('todayPercent').textContent = completion + '%';
+  
+  const streak = getBestStreak();
+  document.getElementById('streakValue').textContent = streak;
+  
+  const flamesContainer = document.getElementById('streakFlames');
+  flamesContainer.innerHTML = '';
+  for (let i = 0; i < Math.min(streak, 10); i++) {
+    const flame = document.createElement('span');
+    flame.className = 'flame';
+    flame.textContent = '🔥';
+    flamesContainer.appendChild(flame);
+  }
+  
+  const dayStatus = loadRoutineDay(todayISO());
+  const todayTodos = todos.filter(t => t.date === todayISO() || !t.date);
+  const routinesDone = Object.values(dayStatus).filter(Boolean).length;
+  const todosDone = todayTodos.filter(t => t.done).length;
+  const total = routines.length + todayTodos.length;
+  
+  document.getElementById('completedValue').textContent = `${routinesDone + todosDone}/${total}`;
+  const completedPercent = total ? ((routinesDone + todosDone) / total) * 100 : 0;
+  document.getElementById('completedProgress').style.width = completedPercent + '%';
+};
+
+// ========== ROUTINES ==========
+const renderRoutines = () => {
+  const container = document.getElementById('routineList');
+  const dayStatus = loadRoutineDay(todayISO());
+  
+  if (routines.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📋</div>
+        <div class="empty-state-message">No routines yet</div>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = '';
+  routines.forEach(routine => {
+    const isDone = !!dayStatus[routine.id];
+    const item = document.createElement('div');
+    item.className = 'list-item' + (isDone ? ' done' : '');
+    
+    item.innerHTML = `
+      <div class="list-item-check" data-id="${routine.id}"></div>
+      <div class="list-item-text">${escapeHtml(routine.text)}</div>
+      <div class="list-item-actions">
+        <button class="list-item-btn" data-id="${routine.id}">🗑️</button>
+      </div>
+    `;
+    
+    container.appendChild(item);
+  });
+  
+  container.querySelectorAll('.list-item-check').forEach(check => {
+    check.onclick = () => {
+      const id = check.dataset.id;
+      const dayStatus = loadRoutineDay(todayISO());
+      dayStatus[id] = !dayStatus[id];
+      saveRoutineDay(todayISO(), dayStatus);
+      
+      if (dayStatus[id]) {
+        addXP(10);
+        showToast('Routine completed! +10 XP', '✅');
+      }
+      
+      renderRoutines();
+      renderDashboard();
+    };
+  });
+  
+  container.querySelectorAll('.list-item-btn').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.id;
+      if (!confirm('Delete this routine?')) return;
+      routines = routines.filter(r => r.id !== id);
+      Storage.set(KEYS.ROUTINES, routines);
+      renderRoutines();
+    };
+  });
+};
+
+document.getElementById('addRoutineBtn').onclick = () => {
+  const input = document.getElementById('newRoutineInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  routines.push({ id: uid(), text });
+  Storage.set(KEYS.ROUTINES, routines);
+  input.value = '';
+  renderRoutines();
+  addXP(5);
+  showToast('Routine added! +5 XP', '➕');
+};
+
+// ========== TODOS ==========
+const renderTodos = () => {
+  const container = document.getElementById('todoList');
+  
+  if (todos.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">✓</div>
+        <div class="empty-state-message">No tasks yet</div>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = '';
+  todos.forEach(todo => {
+    const item = document.createElement('div');
+    item.className = 'list-item' + (todo.done ? ' done' : '');
+    
+    item.innerHTML = `
+      <div class="list-item-check" data-id="${todo.id}"></div>
+      <div class="list-item-text">
+        ${escapeHtml(todo.text)}
+        ${todo.date ? `<div style="font-size:0.8rem;opacity:0.6;margin-top:4px;">📅 ${todo.date}</div>` : ''}
+      </div>
+      <div class="list-item-actions">
+        <button class="list-item-btn" data-id="${todo.id}">🗑️</button>
+      </div>
+    `;
+    
+    container.appendChild(item);
+  });
+  
+  container.querySelectorAll('.list-item-check').forEach(check => {
+    check.onclick = () => {
+      const id = check.dataset.id;
+      const todo = todos.find(t => t.id === id);
+      if (!todo) return;
+      
+      todo.done = !todo.done;
+      Storage.set(KEYS.TODOS, todos);
+      
+      if (todo.done) {
+        addXP(5);
+        showToast('Task completed! +5 XP', '✅');
+      }
+      
+      renderTodos();
+      renderDashboard();
+    };
+  });
+  
+  container.querySelectorAll('.list-item-btn').forEach(btn => {
+    btn.onclick = () => {
+      const id = btn.dataset.id;
+      if (!confirm('Delete this task?')) return;
+      todos = todos.filter(t => t.id !== id);
+      Storage.set(KEYS.TODOS, todos);
+      renderTodos();
+    };
+  });
+};
+
+document.getElementById('addTodoBtn').onclick = () => {
+  const input = document.getElementById('newTodoInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  todos.unshift({ id: uid(), text, done: false });
+  Storage.set(KEYS.TODOS, todos);
+  input.value = '';
+  addXP(5);
+  renderTodos();
+  showToast('Task added! +5 XP', '➕');
+};
+
+document.getElementById('quickAddBtn').onclick = () => {
+  const input = document.getElementById('quickAddInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  todos.unshift({ id: uid(), text, done: false });
+  Storage.set(KEYS.TODOS, todos);
+  input.value = '';
+  addXP(5);
+  renderDashboard();
+  showToast('Task added! +5 XP', '➕');
+};
+
+// ========== FOCUS MODE ==========
+let focusInterval = null;
+let focusSeconds = 25 * 60;
+let focusRunning = false;
+
+const renderFocus = () => {
+  focusSeconds = 25 * 60;
+  updateFocusDisplay();
+};
+
+const updateFocusDisplay = () => {
+  const min = String(Math.floor(focusSeconds / 60)).padStart(2, '0');
+  const sec = String(focusSeconds % 60).padStart(2, '0');
+  document.getElementById('focusTimer').textContent = `${min}:${sec}`;
+};
+
+document.getElementById('focusStart').onclick = () => {
+  if (focusRunning) return;
+  focusRunning = true;
+  
+  focusInterval = setInterval(() => {
+    focusSeconds--;
+    updateFocusDisplay();
+    
+    if (focusSeconds <= 0) {
+      clearInterval(focusInterval);
+      focusInterval = null;
+      focusRunning = false;
+      addXP(25);
+      showToast('Focus session complete! +25 XP', '🎉');
+      focusSeconds = 25 * 60;
+      updateFocusDisplay();
+      document.getElementById('focusStatus').textContent = 'Ready to focus';
+    }
+  }, 1000);
+  
+  document.getElementById('focusStatus').textContent = 'Focusing...';
+};
+
+document.getElementById('focusPause').onclick = () => {
+  if (focusInterval) {
+    clearInterval(focusInterval);
+    focusInterval = null;
+    focusRunning = false;
+    document.getElementById('focusStatus').textContent = 'Paused';
+  }
+};
+
+document.getElementById('focusReset').onclick = () => {
+  if (focusInterval) {
+    clearInterval(focusInterval);
+    focusInterval = null;
+    focusRunning = false;
+  }
+  focusSeconds = 25 * 60;
+  updateFocusDisplay();
+  document.getElementById('focusStatus').textContent = 'Ready to focus';
+};
+
+// ========== FAB ==========
+document.getElementById('fab').onclick = () => {
+  showScreen('dashboard');
+  setTimeout(() => {
+    document.getElementById('quickAddInput').focus();
+  }, 300);
+};
+
+// ========== INIT ==========
+const init = () => {
+  updateLevelBadge();
+  const lastScreen = Storage.get(KEYS.LAST_SCREEN, 'dashboard');
+  showScreen(lastScreen);
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>
